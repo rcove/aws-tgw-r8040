@@ -1,0 +1,48 @@
+variable "app_3_high_port" {
+  description = "Choose the (random-unique) high port that will be used to access the web server in Spoke-1"
+  default     = "9083"
+}
+
+# Deploy internal LB
+resource "aws_lb" "internal_aws_lb_3" {
+  name               = "${var.project_name}-Internal-NLB-3"
+  internal           = true
+  load_balancer_type = "network"
+  subnets            = ["${aws_subnet.spoke_1_external_subnet.*.id}"]
+
+  tags = {
+    Environment       = "${var.project_name}-Internal_NLB-3"
+    x-chkp-forwarding = "TCP-${var.app_3_high_port}-80"
+    x-chkp-management = "${var.template_management_server_name}"
+    x-chkp-template   = "${var.inbound_configuration_template_name}"
+  }
+} 
+
+
+resource "aws_lb_listener" "internal_lb_listener_3" {  
+  load_balancer_arn = "${aws_lb.internal_aws_lb_3.arn}"  
+  port              = 80  
+  protocol          = "TCP"
+  
+  default_action {    
+    target_group_arn = "${aws_lb_target_group.internal_lb_target_group_3.arn}"
+    type             = "forward"  
+  }
+} 
+
+resource "aws_lb_target_group" "internal_lb_target_group_3" {   
+  name = "${var.project_name}-Int-NLB-TG-3" 
+  port     = "80"  
+  protocol = "TCP"  
+  vpc_id   = "${aws_vpc.spoke_1_vpc.id}"   
+  tags {    
+    name = "${var.project_name}-Int-NLB-TG-3rer"    
+  }     
+} 
+
+resource "aws_lb_target_group_attachment" "internal_lb_target_group_attachment_3" {
+  count            = "${aws_instance.spoke_1_instance.count}"
+  target_group_arn = "${aws_lb_target_group.internal_lb_target_group.arn}"
+  target_id        = "${element(aws_instance.spoke_1_instance.*.id, count.index)}"
+  port             = 80
+}
