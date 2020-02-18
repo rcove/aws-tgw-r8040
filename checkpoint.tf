@@ -18,14 +18,6 @@ resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack"
     Permissions             = "Create with read-write permissions"
     BootstrapScript         = <<BOOTSTRAP
 echo '
-clish -i -s -c "lock database override" ;
-clish -i -s -c "installer agent update not-interactive" ;
-clish -i -s -c "installer import cloud Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;
-clish -i -s -c "installer download Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;
-sleep 30 ; 
-clish -i -s -c "installer install Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;
-sleep 60 ;
-api restart ;
 cloudguard on ;
 sed -i '/template_name/c\\${var.outbound_configuration_template_name}: autoscale-2-nic-management' /etc/cloud-version ;
 /opt/CPcme/bin/config-community ${var.vpn_community_name} ;

@@ -64,6 +64,7 @@ resource "aws_instance" "spoke_1_instance" {
     Server      = "${var.project_name}-Website"
   }
 }
+/*
 #############################################
 ######## Spoke-1a app2 Web Server  ##########
 #############################################
@@ -100,6 +101,7 @@ resource "aws_instance" "spoke_1a_instance" {
     Server      = "${var.project_name}-Website"
   }
 }
+*/
 
 ######################################
 ########### Spoke-2 client ###########

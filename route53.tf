@@ -18,7 +18,7 @@ resource "aws_route53_record" "www" {
 data "aws_route53_zone" "selectedapp" {
   name         = "${var.r53zone}"
 }
-
+/*
 resource "aws_route53_record" "app" {
   zone_id = "${data.aws_route53_zone.selectedapp.zone_id}"
   name    = "${var.externaldnshostapp}.${var.r53zone}"
@@ -29,7 +29,7 @@ resource "aws_route53_record" "app" {
     evaluate_target_health = true
   }
 }
-
+*/
 data "aws_route53_zone" "selectedalb" {
   name         = "${var.r53zone}"
 }

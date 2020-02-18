@@ -17,7 +17,7 @@ provider "aws" {
         aws_access_key_id = <ACCESS_KEY_ID>
         aws_secret_access_key = <SECRET_ACCESS_KEY
   */
-  profile = "rich 777916771162"
+  profile = "default"
   region  = "${var.region}"
 }
 variable "region" {
@@ -98,13 +98,13 @@ variable "password_hash" {
 
 # SIC key
 variable "sic_key" {
-  description = "One time password used to established connection between the Management and the Security GAteway"
+  description = "One time password used to established connection between the Management and the Security Gateway"
   default     = "abcdefgh"
 }
 
 variable "cpversion" {
   description = "Check Point version"
-  default     = "R80.30"
+  default     = "R80.40"
 }
 
 variable "management_server_size" {
