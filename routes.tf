@@ -259,12 +259,6 @@ resource "aws_ec2_transit_gateway_route_table" "checkpoint_outbound_transit_gate
   }
 }
 
-# Create route association - This will only be used for the control plane
-resource "aws_ec2_transit_gateway_route_table_association" "checkpoint_outbound_transit_gateway_route_table_association" {
-  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.outbound_transit_gateway_vpc_attachment.id}"
-  transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_outbound_transit_gateway_route_table.id}"
-} 
-
 # Create route propagation - Add routes to the spoke VPCs
 resource "aws_ec2_transit_gateway_route_table_propagation" "spoke_1_outbound_transit_gateway_route_table_propagation" {
   transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.spoke_1_transit_gateway_vpc_attachment.id}"
@@ -279,12 +273,6 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "spoke_1a_outbound_tr
 
 resource "aws_ec2_transit_gateway_route_table_propagation" "spoke_2_outbound_transit_gateway_route_table_propagation" {
   transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.spoke_2_transit_gateway_vpc_attachment.id}"
-  transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_outbound_transit_gateway_route_table.id}"
-}
-
-### Control Plane - Add a route to the Management VPC ###
-resource "aws_ec2_transit_gateway_route_table_propagation" "outbound_management_transit_gateway_route_table_propagation" {
-  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.management_transit_gateway_vpc_attachment.id}"
   transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_outbound_transit_gateway_route_table.id}"
 }
 
@@ -341,6 +329,12 @@ resource "aws_ec2_transit_gateway_route_table_association" "checkpoint_managemen
   transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_management_transit_gateway_route_table.id}"
 } 
 
+# Create route association - This will only be used for the control plane
+resource "aws_ec2_transit_gateway_route_table_association" "checkpoint_outbound_transit_gateway_route_table_association" {
+  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.outbound_transit_gateway_vpc_attachment.id}"
+  transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_management_transit_gateway_route_table.id}"
+} 
+
 # Create route propagation - Add a route to the Inbound and Outbound Security VPCs
 resource "aws_ec2_transit_gateway_route_table_propagation" "management_outbound_transit_gateway_route_table_propagation" {
   transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.outbound_transit_gateway_vpc_attachment.id}"
@@ -352,3 +346,8 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "management_inbound_t
   transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_management_transit_gateway_route_table.id}"
 }
 
+### Control Plane - Add a route to the Management VPC ###
+resource "aws_ec2_transit_gateway_route_table_propagation" "outbound_management_transit_gateway_route_table_propagation" {
+  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.management_transit_gateway_vpc_attachment.id}"
+  transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.checkpoint_management_transit_gateway_route_table.id}"
+}
