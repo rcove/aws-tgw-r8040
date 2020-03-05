@@ -1,7 +1,8 @@
 # AWS CloudGuard IaaS Transit Gateway Demonstration 
 
-Terraform scripts for transit gateway demonstration of CloudGuard in AWS 
-Builds the complete environment with web and application servers, northbound and southbound e-w hubs 
+Terraform scripts for transit gateway demonstration of CloudGuard in AWS \
+Builds the complete environment with web and application servers, northbound and southbound e-w hubs \
+Based on R80.40, go to https://github.com/rcove/TGW for the older version tested with R80.30
 
 ---------------------------------------------------------------
 One time preparation of the AWS account 
@@ -13,9 +14,10 @@ One time preparation of the AWS account
     R80.20 R80.30 Gateway
     https://aws.amazon.com/marketplace/pp/B07LB3YN9P?qid=1558349960795&sr=0-5&ref_=srh_res_product_title
 
-3.	Create IAM access keys for the API login (for terraform) and save into credentials 
-    #  shared_credentials_file = "~/.aws/credentials"  (linux)
-    #  shared_credentials_file = "%USERPROFILE%\.aws\credentials"  (windows)
+3.	Create IAM access keys for the API login (for terraform) and save into credentials \
+      shared_credentials_file = "~/.aws/credentials"  (linux)\
+      shared_credentials_file = "%USERPROFILE%\.aws\credentials"  (windows)
+      
 4.  Ensure you have enough resources in the account, this script creates 6 VPC, 1 transit gateway and 12 instances, the cost for this will be a few dollars per hour, so it is recommended to destroy the resources when not using them  
 
 ----------------------------------------------------------------
@@ -46,10 +48,10 @@ https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso
 CME Administration Guide\
 https://sc1.checkpoint.com/documents/IaaS/WebAdminGuides/EN/CP_CME/Content/Topics/Overview.htm
 
-Currently the upgrade of the CME does not work on boot, upgrade it after first logon 
-clish -i -s -c "installer import cloud Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;\
-clish -i -s -c "installer download Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;\
-clish -i -s -c "installer install Check_Point_R80.30_CME_T66_sk157492.tgz  not-interactive" ;\
+Currently the upgrade of the CME does not work on boot, upgrade it after first logon if needed
+clish -i -s -c "installer import cloud Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
+clish -i -s -c "installer download Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
+clish -i -s -c "installer install Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
 
 Modules  
   checkpoint.tf   - Contains the CFT for the gateways and manager\
@@ -77,4 +79,6 @@ To remove the environment
 1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the VPNs to be deleted then run;  
     terraform destroy 
 
-Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the cme and autoprov-cfg 
+Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the cme and autoprov-cfg\
+
+Please note that these scripts are for labs and are not production validated, you should make sure you validate them if you plan on using them in anger.
