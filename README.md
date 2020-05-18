@@ -8,14 +8,14 @@ Based on R80.40, go to https://github.com/rcove/TGW for the older version tested
 One time preparation of the AWS account 
 1.	Create or choose a ssh key-pair in the account for the DC you are using
 2.	Subscribe to the ELUAs for R80.30 BYOL gateway and management 
-    R80.20 R80.30 management 
+    R80.30 R80.40 management \
     https://aws.amazon.com/marketplace/pp/B07KSBV1MM?qid=1558349960795&sr=0-4&ref_=srh_res_product_title
 
-    R80.20 R80.30 Gateway
+    R80.30 R80.40 Gateway \
     https://aws.amazon.com/marketplace/pp/B07LB3YN9P?qid=1558349960795&sr=0-5&ref_=srh_res_product_title
 
 3.	Create IAM access keys for the API login (for terraform) and save into credentials \
-      shared_credentials_file = "~/.aws/credentials"  (linux)\
+      shared_credentials_file = "~/.aws/credentials"  (linux) \
       shared_credentials_file = "%USERPROFILE%\.aws\credentials"  (windows)
       
 4.  Ensure you have enough resources in the account, this script creates 6 VPC, 1 transit gateway and 12 instances, the cost for this will be a few dollars per hour, so it is recommended to destroy the resources when not using them  
