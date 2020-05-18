@@ -7,7 +7,7 @@ Based on R80.40, go to https://github.com/rcove/TGW for the older version tested
 ---------------------------------------------------------------
 One time preparation of the AWS account 
 1.	Create or choose a ssh key-pair in the account for the DC you are using
-2.	Subscribe to the ELUAs for R80.30 BYOL gateway and management 
+2.	Subscribe to the ELUAs for R80.40 BYOL gateway and management \
     R80.30 R80.40 management \
     https://aws.amazon.com/marketplace/pp/B07KSBV1MM?qid=1558349960795&sr=0-4&ref_=srh_res_product_title
 
