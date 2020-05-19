@@ -30,19 +30,20 @@ sudo echo "" >> index.html
 sudo nohup busybox httpd -f -p 80 &
 sudo sleep 5
 WEBSITE
+
 }
 
 resource "aws_instance" "spoke_1_instance" {
-  ami                         = "${data.aws_ami.ubuntu_ami.id}"
+  ami                         = data.aws_ami.ubuntu_ami.id
   instance_type               = "t2.nano"
-  count                       = "${length(data.aws_availability_zones.azs.names)}"
-  availability_zone           = "${element(data.aws_availability_zones.azs.names, count.index)}"
-  subnet_id                   = "${element(aws_subnet.spoke_1_external_subnet.*.id,count.index)}"
-  key_name                    = "${var.key_name}"
+  count                       = length(data.aws_availability_zones.azs.names)
+  availability_zone           = element(data.aws_availability_zones.azs.names, count.index)
+  subnet_id                   = element(aws_subnet.spoke_1_external_subnet.*.id, count.index)
+  key_name                    = var.key_name
   associate_public_ip_address = "false"
-  vpc_security_group_ids      = ["${aws_security_group.spoke_1_security_group.id}"]
+  vpc_security_group_ids      = [aws_security_group.spoke_1_security_group.id]
 
-    user_data = <<-EOF
+  user_data = <<-EOF
               #!/bin/bash
               echo "${local.website}" >> website.sh
               chmod +x website.sh
@@ -57,13 +58,15 @@ resource "aws_instance" "spoke_1_instance" {
               sudo echo "Web server directed by /app1" >> app1/index.html
               sudo nohup busybox httpd -f -p 80 &
               sudo sleep 5
-              EOF
+EOF
 
-  tags {
-    Name        = "${var.project_name}-Spoke-1 Web Server ${count.index+1}"
-    Server      = "${var.project_name}-Website"
+
+  tags = {
+    Name   = "${var.project_name}-Spoke-1 Web Server ${count.index + 1}"
+    Server = "${var.project_name}-Website"
   }
 }
+
 /*
 #############################################
 ######## Spoke-1a app2 Web Server  ##########
@@ -108,16 +111,17 @@ resource "aws_instance" "spoke_1a_instance" {
 ######################################
 
 resource "aws_instance" "spoke_2_instance" {
-  ami                         = "${data.aws_ami.ubuntu_ami.id}"
+  ami                         = data.aws_ami.ubuntu_ami.id
   instance_type               = "t2.nano"
-  subnet_id                   = "${aws_subnet.spoke_2_external_subnet.id}"
-  key_name                    = "${var.key_name}"
+  subnet_id                   = aws_subnet.spoke_2_external_subnet.id
+  key_name                    = var.key_name
   associate_public_ip_address = "false"
-  vpc_security_group_ids      = ["${aws_security_group.spoke_2_security_group.id}"]
-			  
-  tags {
-    Name    = "${var.project_name}-Spoke-2 Linux"
-    Dev-Test    = "false"
-    Prod-Test   = "true"
+  vpc_security_group_ids      = [aws_security_group.spoke_2_security_group.id]
+
+  tags = {
+    Name      = "${var.project_name}-Spoke-2 Linux"
+    Dev-Test  = "false"
+    Prod-Test = "true"
   }
 }
+

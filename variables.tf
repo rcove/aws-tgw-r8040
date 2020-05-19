@@ -1,16 +1,15 @@
 variable "project_name" {
   description = "Project Name - will prefex all generated AWS resource names"
-  default = "CP-TGW"
+  default     = "CP-TGW"
 }
-
 
 ######################################
 ######## Account Settings ############
 ######################################
 
 provider "aws" {
-#  shared_credentials_file = "~/.aws/credentials"
-#  shared_credentials_file = "%USERPROFILE%\.aws\credentials"
+  #  shared_credentials_file = "~/.aws/credentials"
+  #  shared_credentials_file = "%USERPROFILE%\.aws\credentials"
   /*
       Shared credential files is a text file with the following format:
         [<PROFILE>]
@@ -18,19 +17,20 @@ provider "aws" {
         aws_secret_access_key = <SECRET_ACCESS_KEY
   */
   profile = "default"
-  region  = "${var.region}"
+  region  = var.region
 }
+
 variable "region" {
   default = "ap-southeast-2"
 }
 
-
-data "aws_availability_zones" "azs" {}
+data "aws_availability_zones" "azs" {
+}
 
 # Private key
 variable "key_name" {
   description = "Must be the name of an existing EC2 KeyPair"
-  default = "rich-lab"
+  default     = "rich-lab"
 }
 
 #########################################
@@ -60,6 +60,7 @@ variable "spoke_1_cidr_vpc" {
   description = "VPC hosting an internet facing website"
   default     = "10.110.0.0/16"
 }
+
 # VPC hosting second website
 variable "spoke_1a_cidr_vpc" {
   description = "VPC hosting an internet facing website"
@@ -76,15 +77,16 @@ variable "spoke_1_high_port" {
   description = "Choose the (random-unique) high port that will be used to access the web server in Spoke-1"
   default     = "9080"
 }
+
 variable "app_1_high_port" {
   description = "Choose the (random-unique) high port that will be used to access the web server in Spoke-1"
   default     = "9081"
 }
+
 variable "app_2_high_port" {
   description = "Choose the (random-unique) high port that will be used to access the web server in Spoke-1"
   default     = "9082"
 }
-
 
 ###########################################
 ############# Server Settings #############
@@ -119,7 +121,6 @@ variable "inbound_asg_server_size" {
   default = "c5.large"
 }
 
-
 #############################################
 ######### Check Point Template Names ########
 #############################################
@@ -137,23 +138,29 @@ variable "inbound_configuration_template_name" {
   description = "The name of the inbound template name in the cloudformation template"
   default     = "tgw-inbound-template"
 }
+
 variable "vpn_community_name" {
   description = "The name of the VPN Community used by the TGW ASG"
-  default     = "tgw-community"  
+  default     = "tgw-community"
 }
+
 variable "externaldnshost" {
   description = "The name of the first website"
-  default     = "www"  
+  default     = "www"
 }
+
 variable "externaldnshostapp" {
   description = "The name of the second website"
-  default     = "app"  
+  default     = "app"
 }
+
 variable "externaldnshostalb" {
   description = "The name of the website defined by the alb"
-  default     = "alb"  
+  default     = "alb"
 }
+
 variable "r53zone" {
   description = "The name of the domain used"
-  default     = "mycloudguard.net"  
+  default     = "mycloudguard.net"
 }
+

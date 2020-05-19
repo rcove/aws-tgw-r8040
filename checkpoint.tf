@@ -6,17 +6,17 @@
 resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack" {
   name = "${var.project_name}-Management"
 
-  parameters {
-    VPC                     = "${aws_vpc.management_vpc.id}"
-    Subnet                  = "${aws_subnet.management_subnet.id}" 
-    Version                 = "${var.cpversion}-BYOL"
-    InstanceType            = "${var.management_server_size}"
-    Name                    = "${var.project_name}-Management" 
-    KeyName                 = "${var.key_name}"
-    PasswordHash            = "${var.password_hash}"
-    Shell                   = "/bin/bash"
-    Permissions             = "Create with read-write permissions"
-    BootstrapScript         = <<BOOTSTRAP
+  parameters = {
+    VPC             = aws_vpc.management_vpc.id
+    Subnet          = aws_subnet.management_subnet.id
+    Version         = "${var.cpversion}-BYOL"
+    InstanceType    = var.management_server_size
+    Name            = "${var.project_name}-Management"
+    KeyName         = var.key_name
+    PasswordHash    = var.password_hash
+    Shell           = "/bin/bash"
+    Permissions     = "Create with read-write permissions"
+    BootstrapScript = <<BOOTSTRAP
 echo '
 cloudguard on ;
 sed -i '/template_name/c\\${var.outbound_configuration_template_name}: autoscale-2-nic-management' /etc/cloud-version ;
@@ -36,12 +36,13 @@ autoprov-cfg -f add template -tn ${var.inbound_configuration_template_name} -otp
 chmod +x /etc/cloud-setup.sh ;
 /etc/cloud-setup.sh > /var/log/cloud-setup.log ;
 BOOTSTRAP
-}
 
-  template_url        = "https://s3.amazonaws.com/CloudFormationTemplate/management.json"
-  capabilities        = ["CAPABILITY_IAM"]
-  disable_rollback    = true
-  timeout_in_minutes  = 50
+  }
+
+  template_url       = "https://s3.amazonaws.com/CloudFormationTemplate/management.json"
+  capabilities       = ["CAPABILITY_IAM"]
+  disable_rollback   = true
+  timeout_in_minutes = 50
 }
 
 ##########################################
@@ -52,38 +53,37 @@ BOOTSTRAP
 resource "aws_cloudformation_stack" "checkpoint_tgw_cloudformation_stack" {
   name = "${var.project_name}-Outbound-ASG"
 
-  parameters {
-    VpcCidr                                     = "${var.outbound_cidr_vpc}"
-    AvailabilityZones                           = "${join(", ", data.aws_availability_zones.azs.names)}"
-    NumberOfAZs                                 = "${length(data.aws_availability_zones.azs.names)}"
-    PublicSubnetCidrA                           = "${cidrsubnet(var.outbound_cidr_vpc, 8, 0)}"
-    PublicSubnetCidrB                           = "${cidrsubnet(var.outbound_cidr_vpc, 8, 64)}" 
-    PublicSubnetCidrC                           = "${cidrsubnet(var.outbound_cidr_vpc, 8, 128)}" 
-    PublicSubnetCidrD                           = "${cidrsubnet(var.outbound_cidr_vpc, 8, 196)}"   
-    ManagementDeploy                            = "No"
-    KeyPairName                                 = "${var.key_name}"
-    GatewaysAddresses                           = "${var.outbound_cidr_vpc}"
-    GatewayManagement                           = "Locally managed"
-    GatewaysInstanceType                        = "${var.outbound_asg_server_size}"
-    GatewaysMinSize                             = "1"
-    GatewaysMaxSize                             = "2"
-    GatewaysBlades                              = "On"
-    GatewaysLicense                             = "${var.cpversion}-BYOL"
-    GatewaysPasswordHash                        = "${var.password_hash}"
-    GatewaysSIC                                 = "${var.sic_key}"
-    ControlGatewayOverPrivateOrPublicAddress    = "private"
-    ManagementServer                            = "${var.template_management_server_name}"
-    ConfigurationTemplate                       = "${var.outbound_configuration_template_name}"
-    Name                                        = "${var.project_name}-CheckPoint-TGW"
-    Shell                                       = "/bin/bash"
- }
+  parameters = {
+    VpcCidr                                  = var.outbound_cidr_vpc
+    AvailabilityZones                        = join(", ", data.aws_availability_zones.azs.names)
+    NumberOfAZs                              = length(data.aws_availability_zones.azs.names)
+    PublicSubnetCidrA                        = cidrsubnet(var.outbound_cidr_vpc, 8, 0)
+    PublicSubnetCidrB                        = cidrsubnet(var.outbound_cidr_vpc, 8, 64)
+    PublicSubnetCidrC                        = cidrsubnet(var.outbound_cidr_vpc, 8, 128)
+    PublicSubnetCidrD                        = cidrsubnet(var.outbound_cidr_vpc, 8, 196)
+    ManagementDeploy                         = "No"
+    KeyPairName                              = var.key_name
+    GatewaysAddresses                        = var.outbound_cidr_vpc
+    GatewayManagement                        = "Locally managed"
+    GatewaysInstanceType                     = var.outbound_asg_server_size
+    GatewaysMinSize                          = "1"
+    GatewaysMaxSize                          = "2"
+    GatewaysBlades                           = "On"
+    GatewaysLicense                          = "${var.cpversion}-BYOL"
+    GatewaysPasswordHash                     = var.password_hash
+    GatewaysSIC                              = var.sic_key
+    ControlGatewayOverPrivateOrPublicAddress = "private"
+    ManagementServer                         = var.template_management_server_name
+    ConfigurationTemplate                    = var.outbound_configuration_template_name
+    Name                                     = "${var.project_name}-CheckPoint-TGW"
+    Shell                                    = "/bin/bash"
+  }
 
-  template_url        = "https://s3.amazonaws.com/CloudFormationTemplate/checkpoint-tgw-asg-master.yaml"
-  capabilities        = ["CAPABILITY_IAM"]
-  disable_rollback    = true
-  timeout_in_minutes  = 50
+  template_url       = "https://s3.amazonaws.com/CloudFormationTemplate/checkpoint-tgw-asg-master.yaml"
+  capabilities       = ["CAPABILITY_IAM"]
+  disable_rollback   = true
+  timeout_in_minutes = 50
 }
-
 
 ##########################################
 ########### Inbound ASG  #################
@@ -93,26 +93,27 @@ resource "aws_cloudformation_stack" "checkpoint_tgw_cloudformation_stack" {
 resource "aws_cloudformation_stack" "checkpoint_inbound_asg_cloudformation_stack" {
   name = "${var.project_name}-Inbound-ASG"
 
-  parameters {
-    VPC                                         = "${aws_vpc.inbound_vpc.id}"
-    Subnets                                     = "${join(",",aws_subnet.inbound_subnet.*.id)}"
-    ControlGatewayOverPrivateOrPublicAddress    = "private"
-    MinSize                                     = 1
-    MaxSize                                     = 2
-    ManagementServer                            = "${var.template_management_server_name}"
-    ConfigurationTemplate                       = "${var.inbound_configuration_template_name}"
-    Name                                        = "${var.project_name}-CheckPoint-Inbound-ASG"
-    InstanceType                                = "${var.inbound_asg_server_size}"
-    TargetGroups                                = "${aws_lb_target_group.external_lb_target_group.arn},${aws_lb_target_group.external_lb2_target_group.arn},${aws_lb_target_group.external_lb_tg_app1.arn},${aws_lb_target_group.external_lb_tg_app2.arn}"
-    KeyName                                     = "${var.key_name}"
-    PasswordHash                                = "${var.password_hash}"
-    SICKey                                      = "${var.sic_key}"
-    License                                     = "${var.cpversion}-BYOL"
-    Shell                                       = "/bin/bash"
+  parameters = {
+    VPC                                      = aws_vpc.inbound_vpc.id
+    Subnets                                  = join(",", aws_subnet.inbound_subnet.*.id)
+    ControlGatewayOverPrivateOrPublicAddress = "private"
+    MinSize                                  = 1
+    MaxSize                                  = 2
+    ManagementServer                         = var.template_management_server_name
+    ConfigurationTemplate                    = var.inbound_configuration_template_name
+    Name                                     = "${var.project_name}-CheckPoint-Inbound-ASG"
+    InstanceType                             = var.inbound_asg_server_size
+    TargetGroups                             = "${aws_lb_target_group.external_lb_target_group.arn},${aws_lb_target_group.external_lb2_target_group.arn},${aws_lb_target_group.external_lb_tg_app1.arn},${aws_lb_target_group.external_lb_tg_app2.arn}"
+    KeyName                                  = var.key_name
+    PasswordHash                             = var.password_hash
+    SICKey                                   = var.sic_key
+    License                                  = "${var.cpversion}-BYOL"
+    Shell                                    = "/bin/bash"
   }
 
-  template_url        = "https://s3.amazonaws.com/CloudFormationTemplate/autoscale.json"
-  capabilities        = ["CAPABILITY_IAM"]
-  disable_rollback    = true
-  timeout_in_minutes  = 50
+  template_url       = "https://s3.amazonaws.com/CloudFormationTemplate/autoscale.json"
+  capabilities       = ["CAPABILITY_IAM"]
+  disable_rollback   = true
+  timeout_in_minutes = 50
 }
+
