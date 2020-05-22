@@ -51,7 +51,7 @@ https://sc1.checkpoint.com/documents/IaaS/WebAdminGuides/EN/CP_CME/Content/Topic
 Currently the upgrade of the CME does not work on boot, upgrade it after first logon if needed,
 clish -i -s -c "installer import cloud Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
 clish -i -s -c "installer download Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
-clish -i -s -c "installer install Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
+clish -i -s -c "installer install Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,
 
 Modules  
   checkpoint.tf   - Contains the CFT for the gateways and manager\
@@ -71,14 +71,14 @@ Modules
 
 To run the script in terrraform  
     terraform init\
-    terraform apply\
+    terraform apply
 
 You can Logon after about 30 mins to the manager via the windows based Check Point SmartDashboard R80.40
 
 To remove the environment  
 1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the VPNs to be deleted then run\ 
-    terraform destroy\
+    terraform destroy
 
-Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the CME and autoprov-cfg similar to the bootstrap\
+Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the CME and autoprov-cfg similar to the bootstrap
 
-Please note that these scripts are for demonstration in labs and are not production validated, you should make sure you validate and test them if you plan on using them in anger.
+Please note that these scripts are for demonstration in labs and are not production validated, you should make sure you validate and test them if you plan on using them in anger
