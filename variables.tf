@@ -18,6 +18,7 @@ provider "aws" {
   */
   profile = "default"
   region  = var.region
+  version = "~> 2.61.0"
 }
 
 variable "region" {

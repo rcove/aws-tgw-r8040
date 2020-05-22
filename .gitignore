@@ -8,3 +8,4 @@
 # .tfvars files
 *.tfvars
 *.x
+.vscode/settings.json

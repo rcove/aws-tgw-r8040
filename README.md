@@ -23,9 +23,9 @@ One time preparation of the AWS account
 ----------------------------------------------------------------
 
 One time preparation of the Terraform scripts\
-Works with terraform v0.11.13 not 0.12.x https://github.com/hashicorp/terraform/issues/21170
+Works with terraform v0.12.x 
 1. Modify the variables.tf to suite your needs   
-2. Delete Route53.tf if not needed  
+2. Delete Route53.tf if not needed and you dont have a route53 domain
 3. Run terraform init  
 
 ------------------------------------------------------------------
@@ -48,10 +48,10 @@ https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso
 CME Administration Guide\
 https://sc1.checkpoint.com/documents/IaaS/WebAdminGuides/EN/CP_CME/Content/Topics/Overview.htm
 
-Currently the upgrade of the CME does not work on boot, upgrade it after first logon if needed
-clish -i -s -c "installer import cloud Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
-clish -i -s -c "installer download Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
-clish -i -s -c "installer install Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ;\
+Currently the upgrade of the CME does not work on boot, upgrade it after first logon if needed,
+clish -i -s -c "installer import cloud Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
+clish -i -s -c "installer download Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
+clish -i -s -c "installer install Check_Point_R80.40_CME_Txx_sk157492.tgz  not-interactive" ,\
 
 Modules  
   checkpoint.tf   - Contains the CFT for the gateways and manager\
@@ -69,16 +69,16 @@ Modules
 
 -------------------------------------------------------------------
 
-To run the script  
-    terraform init  
-    terraform apply  
+To run the script in terrraform  
+    terraform init\
+    terraform apply\
 
-You can Logon after about 30 mins to the manager via the windows based Check Point SmartDashboard
+You can Logon after about 30 mins to the manager via the windows based Check Point SmartDashboard R80.40
 
 To remove the environment  
-1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the VPNs to be deleted then run;  
-    terraform destroy 
+1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the VPNs to be deleted then run\ 
+    terraform destroy\
 
-Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the cme and autoprov-cfg\
+Note: To use an existing manager then some modifications will be needed to terraform scripts and you will need to setup the CME and autoprov-cfg similar to the bootstrap\
 
-Please note that these scripts are for labs and are not production validated, you should make sure you validate them if you plan on using them in anger.
+Please note that these scripts are for demonstration in labs and are not production validated, you should make sure you validate and test them if you plan on using them in anger.

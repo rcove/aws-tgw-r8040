@@ -29,7 +29,9 @@ data "aws_subnet_ids" "outbound_subnet_ids" {
 
 data "aws_subnet" "outbound_subnet" {
   count = length(data.aws_availability_zones.azs.names)
-  id    = data.aws_subnet_ids.outbound_subnet_ids.ids[count.index]
+#   id    = data.aws_subnet_ids.outbound_subnet_ids.ids[count.index]
+    id    = tolist(data.aws_subnet_ids.outbound_subnet_ids.ids)[count.index]
+
 }
 
 # -    subnet_ids         = ["${data.aws_subnet_ids.private.ids[0]}", "${data.aws_subnet_ids.private.ids[1]}"]

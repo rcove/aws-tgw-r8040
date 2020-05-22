@@ -1,5 +1,5 @@
 # -------------------------------------------
-# Create a External ALB for the applications 
+# Create an External ALB for the applications 
 # -------------------------------------------
 # Security group for alb
 resource "aws_security_group" "ealb" {
@@ -90,9 +90,20 @@ resource "aws_lb_listener" "external_alb_listener" {
 resource "aws_lb_listener_rule" "external_alb_rules" {
   listener_arn = aws_lb_listener.external_alb_listener.arn
 
-  #### Terrform does not allow for multiple rules but you can add this one after the build
-  #### posibly a bug in tf  
-  /*
+  priority = 90
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.external_lb_tg_app2.arn
+  }
+  # this condition is depreciated but cant get the non depreciated version to work (see below)
+  condition {
+    field = "path-pattern" 
+    values = ["/app2/*"]
+  }
+/*
+  #### Terrform does not allow for multiple ALB rules but you can add this one after the build
+  #### posibly it is a bug in tf 0.11.x not tested yet in tf 0.12.x  
 
   priority     = 100
 
@@ -100,23 +111,13 @@ resource "aws_lb_listener_rule" "external_alb_rules" {
     type             = "forward"
     target_group_arn = "${aws_lb_target_group.external_lb_tg_app1.arn}"
   }
-
+  # note this form of condition (the non deprectiated one) does not work for some reasonn 
   condition {
-    field  = "path-pattern"
+    path-pattern {
     values = ["/app1/*"]
-  }
+    }
+   }
 */
-  priority = 90
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.external_lb_tg_app2.arn
-  }
-
-  condition {
-    field  = "path-pattern"
-    values = ["/app2/*"]
-  }
 }
 
 # The attachment needs to be done after creation as it is in the CFT 
