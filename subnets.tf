@@ -6,7 +6,7 @@
 resource "aws_subnet" "management_subnet" {
   vpc_id            = aws_vpc.management_vpc.id
   cidr_block        = cidrsubnet(var.management_cidr_vpc, 8, 1)
-  availability_zone = "ap-southeast-2a"
+  availability_zone = "${var.region}a"
 
   tags = {
     Name = "${var.project_name}-Management"

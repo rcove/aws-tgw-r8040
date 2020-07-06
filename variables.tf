@@ -22,7 +22,7 @@ provider "aws" {
 }
 
 variable "region" {
-  default = "ap-southeast-2"
+  default = "us-west-2"
 }
 
 data "aws_availability_zones" "azs" {
@@ -120,6 +120,10 @@ variable "outbound_asg_server_size" {
 
 variable "inbound_asg_server_size" {
   default = "c5.large"
+}
+
+variable "linux_small_server_size" {
+  default = "t3a.nano"
 }
 
 #############################################

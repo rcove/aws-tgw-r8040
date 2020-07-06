@@ -35,7 +35,7 @@ WEBSITE
 
 resource "aws_instance" "spoke_1_instance" {
   ami                         = data.aws_ami.ubuntu_ami.id
-  instance_type               = "t2.nano"
+  instance_type               = var.linux_small_server_size
   count                       = length(data.aws_availability_zones.azs.names)
   availability_zone           = element(data.aws_availability_zones.azs.names, count.index)
   subnet_id                   = element(aws_subnet.spoke_1_external_subnet.*.id, count.index)
@@ -74,7 +74,7 @@ EOF
 
 resource "aws_instance" "spoke_1a_instance" {
   ami                         = "${data.aws_ami.ubuntu_ami.id}"
-  instance_type               = "t2.nano"
+  instance_type               = var.linux_small_server_size
   count                       = "${length(data.aws_availability_zones.azs.names)}"
   availability_zone           = "${element(data.aws_availability_zones.azs.names, count.index)}"
   subnet_id                   = "${element(aws_subnet.spoke_1a_external_subnet.*.id,count.index)}"
@@ -112,7 +112,7 @@ resource "aws_instance" "spoke_1a_instance" {
 
 resource "aws_instance" "spoke_2_instance" {
   ami                         = data.aws_ami.ubuntu_ami.id
-  instance_type               = "t2.nano"
+  instance_type               = var.linux_small_server_size
   subnet_id                   = aws_subnet.spoke_2_external_subnet.id
   key_name                    = var.key_name
   associate_public_ip_address = "false"
