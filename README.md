@@ -19,7 +19,7 @@ One time preparation of the AWS account
       shared_credentials_file = "~/.aws/credentials"  (linux) \
       shared_credentials_file = "%USERPROFILE%\.aws\credentials"  (windows)
       
-4.  Ensure you have enough resources in the account, this script creates 6 VPC, 1 transit gateway and 12 instances, the cost for this will be a few dollars per hour, so it is recommended to destroy the resources when not using them  
+4.  Ensure you have enough resources in the account, this script creates 6 VPC, 1 transit gateway and 12 instances (~20 cores), the cost for this will be a few dollars per hour, so it is recommended to destroy the resources when not using them, by default you can only create 5 VPC per region, log a resource request for more. 
 
 ----------------------------------------------------------------
 

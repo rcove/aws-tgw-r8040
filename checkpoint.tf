@@ -17,8 +17,13 @@ resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack"
     Shell           = "/bin/bash"
     Permissions     = "Create with read-write permissions"
     BootstrapScript = <<BOOTSTRAP
-echo '
+echo ' ,
 cloudguard on ,
+clish -i -c "lock database override" ,
+clish -i -c "installer uninstall Check_Point_CPcme_Bundle_R80_40_T79.tgz last-take not-interactive" ,
+sleep 5 ,
+autoupdatercli stop ,
+autoupdatercli enable CME ,
 sed -i '/template_name/c\\${var.outbound_configuration_template_name}: autoscale-2-nic-management' /etc/cloud-version ,
 /opt/CPcme/bin/config-community ${var.vpn_community_name} ,
 mgmt_cli -r true set access-rule layer Network rule-number 1 action "Accept" track "Log" ,
