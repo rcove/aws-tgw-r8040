@@ -35,7 +35,9 @@ autoprov-cfg -f set controller AWS -cn tgw-controller -sg -sv -com ${var.vpn_com
 autoprov-cfg -f set template -tn ${var.outbound_configuration_template_name} -vpn -vd "" -con ${var.vpn_community_name} ,
 autoprov-cfg -f set template -tn ${var.outbound_configuration_template_name} -ia -ips -appi -av -ab ,
 autoprov-cfg -f add template -tn ${var.inbound_configuration_template_name} -otp ${var.sic_key} -ver ${var.cpversion} -po Standard -ia -ips -appi -av -ab ,
-/opt/CPvsec-R80.40/bin/cloudguard on ' > /etc/cloud-setup.sh ,
+/opt/CPvsec-R80.40/bin/cloudguard on ,
+sleep 20 ,
+init 6 ' > /etc/cloud-setup.sh ,
 chmod +x /etc/cloud-setup.sh ,
 /etc/cloud-setup.sh ,
 BOOTSTRAP
