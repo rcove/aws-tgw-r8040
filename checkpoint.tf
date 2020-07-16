@@ -2,7 +2,8 @@
 ############# Management #################
 ##########################################
 # Deploy CP Management cloudformation template - sk130372
-# Run a user-data script to configure the manager with rules and CME setup including the VPN mesh 
+# Run a user-data script to configure the manager with rules 
+# and CME setup including the VPN mesh 
 resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack" {
   name = "${var.project_name}-Management"
 
@@ -17,14 +18,11 @@ resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack"
     Shell           = "/bin/bash"
     Permissions     = "Create with read-write permissions"
     BootstrapScript = <<BOOTSTRAP
-echo ' ,
-cloudguard on ,
-clish -i -c "lock database override" ,
-clish -i -c "installer uninstall Check_Point_CPcme_Bundle_R80_40_T79.tgz last-take not-interactive" ,
-sleep 5 ,
-autoupdatercli stop ,
+echo 'clish -i -c "installer uninstall Check_Point_CPcme_Bundle_R80_40_T79.tgz last-take not-interactive" ,
+sleep 15 ,
 autoupdatercli enable CME ,
-sed -i '/template_name/c\\${var.outbound_configuration_template_name}: autoscale-2-nic-management' /etc/cloud-version ,
+sleep 60 ,
+autoprov-cfg -v ,
 /opt/CPcme/bin/config-community ${var.vpn_community_name} ,
 mgmt_cli -r true set access-rule layer Network rule-number 1 action "Accept" track "Log" ,
 mgmt_cli -r true add access-layer name "Inline" ,
@@ -37,9 +35,9 @@ autoprov-cfg -f set controller AWS -cn tgw-controller -sg -sv -com ${var.vpn_com
 autoprov-cfg -f set template -tn ${var.outbound_configuration_template_name} -vpn -vd "" -con ${var.vpn_community_name} ,
 autoprov-cfg -f set template -tn ${var.outbound_configuration_template_name} -ia -ips -appi -av -ab ,
 autoprov-cfg -f add template -tn ${var.inbound_configuration_template_name} -otp ${var.sic_key} -ver ${var.cpversion} -po Standard -ia -ips -appi -av -ab ,
-' > /etc/cloud-setup.sh ,
+/opt/CPvsec-R80.40/bin/cloudguard on ' > /etc/cloud-setup.sh ,
 chmod +x /etc/cloud-setup.sh ,
-/etc/cloud-setup.sh > /var/log/cloud-setup.log ,
+/etc/cloud-setup.sh ,
 BOOTSTRAP
 
   }
@@ -49,6 +47,10 @@ BOOTSTRAP
   disable_rollback   = true
   timeout_in_minutes = 50
 }
+# note: install log file in /var/log/cloud-user-data
+# CME log file in 
+# sed -i '/template_name/c\\${var.outbound_configuration_template_name}: autoscale-2-nic-management' /etc/cloud-version ,
+
 ##########################################
 ########### Outbound ASG  ################
 ##########################################
