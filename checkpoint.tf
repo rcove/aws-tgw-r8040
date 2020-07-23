@@ -18,8 +18,9 @@ resource "aws_cloudformation_stack" "checkpoint_Management_cloudformation_stack"
     Shell           = "/bin/bash"
     Permissions     = "Create with read-write permissions"
     BootstrapScript = <<BOOTSTRAP
-echo 'clish -i -c "installer uninstall Check_Point_CPcme_Bundle_R80_40_T79.tgz last-take not-interactive" ,
-sleep 15 ,
+echo ' sleep 10 ,
+clish -i -c "installer uninstall Check_Point_CPcme_Bundle_R80_40_T79.tgz last-take not-interactive" ,
+sleep 60 ,
 autoupdatercli enable CME ,
 sleep 60 ,
 autoprov-cfg -v ,

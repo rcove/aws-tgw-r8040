@@ -96,12 +96,13 @@ resource "aws_lb_listener_rule" "external_alb_rules" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.external_lb_tg_app2.arn
   }
-  # this condition is depreciated but cant get the non depreciated version to work (see below)
-  condition {
-    field = "path-pattern" 
-    values = ["/app2/*"]
+    condition {
+    path_pattern {
+      values = ["/app2/*"]
+    }
   }
 /*
+
   #### Terrform does not allow for multiple ALB rules but you can add this one after the build
   #### posibly it is a bug in tf 0.11.x not tested yet in tf 0.12.x  
 
