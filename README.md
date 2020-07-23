@@ -72,7 +72,7 @@ To run the script in terrraform
 You can Logon after about 30 mins to the manager via the windows based Check Point SmartDashboard R80.40
 
 To remove the environment  
-1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the VPNs to be deleted then run\
+1. set the autoscale group to 0 instances for the outbound autoscale group, wait a few minutes to allow the site to site VPNs to be deleted then run\
     terraform destroy
 
 Note: To use an existing manager; some modifications will be needed to terraform scripts and you will need to setup the CME and autoprov-cfg similar to the bootstrap
@@ -80,3 +80,11 @@ Note: To use an existing manager; some modifications will be needed to terraform
 Please note that these scripts are for demonstration in labs and are not production validated, you should make sure you validate and test them if you plan on using them in anger
 
 Based on Check Point IaaS R80.40, for the older version tested with R80.30 go to https://github.com/rcove/TGW 
+
+*Troubleshooting*\
+On the manager\ 
+the logs for install are in\
+first time install and startup script  /var/log/cloud-user-data.log\
+CME run log - tail -f /var/log/CPcme/cme.log 
+
+Sometimes you need to reset SIC, ssh to the gateway and run cpconfig, set the password to equal the one in the variables 
